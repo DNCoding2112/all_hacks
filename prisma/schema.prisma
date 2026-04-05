@@ -1,0 +1,29 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite" // Change to "postgresql" for production
+  url      = "file:./dev.db" // In prod use env("DATABASE_URL")
+}
+
+model Hackathon {
+  id        String    @id
+  title     String
+  platform  String
+  company   String?
+  deadline  DateTime?
+  startDate DateTime?
+  link      String
+  tags      String // Stored as JSON string or comma-separated
+  prize     String?
+  location  String?
+  source    String
+  scrapedAt DateTime  @default(now())
+  score     Int       @default(0)
+
+  @@unique([title, platform])
+}
