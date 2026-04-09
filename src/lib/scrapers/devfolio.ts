@@ -3,48 +3,46 @@ import { HackathonData } from '../types';
 
 export const scrapeDevfolio = async (): Promise<HackathonData[]> => {
   try {
-    // Example endpoint - devfolio uses an internal API for their search
-    // This may need headers or cookies in a real production scenario
-    // URL: 'https://api.devfolio.co/api/search/hackathons'
+    console.log('[Devfolio] Starting live scrape...');
     
-    // We simulate the response structure here for the scaffold.
-    console.log('[Devfolio] Starting scrape...');
-    
-    const mockData: HackathonData[] = [
-      {
-        title: "ETHIndia 2024",
-        platform: "Devfolio",
-        company: "Ethereum Foundation",
-        deadline: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000), // 10 days from now
-        startDate: new Date(),
-        link: "https://ethindia.devfolio.co/",
-        tags: ["Web3", "Blockchain", "Crypto"],
-        prize: "₹10,00,000",
-        location: "Bengaluru, India",
-        source: "devfolio-api"
-      },
-      {
-        title: "AI Innovators Hack",
-        platform: "Devfolio",
-        company: "Google",
-        deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days from now
-        startDate: new Date(),
-        link: "https://ai-innovators.devfolio.co/",
-        tags: ["AI", "Machine Learning", "LLM"],
-        prize: "₹5,00,000",
-        location: "Online",
-        source: "devfolio-api"
+    // Devfolio internal API - fetching first page (highest relevance/date)
+    const response = await axios.get('https://api.devfolio.co/api/hackathons', {
+      params: { page: 1 },
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
       }
-    ];
+    });
 
-    // In a full implementation:
-    // const response = await axios.get('https://api.devfolio.co/api/search/hackathons');
-    // Map response.data to HackathonData[]
+    const items = response.data?.result || [];
 
-    console.log(`[Devfolio] Scraped ${mockData.length} mock events successfully.`);
-    return mockData;
-  } catch (error) {
-    console.error('Error scraping Devfolio:', error);
+    // Limit to top 20 latest/relevant as requested
+    const limitedItems = items.slice(0, 20);
+
+    const mappedData: HackathonData[] = limitedItems.map((item: any) => ({
+      title: item.name,
+      platform: 'Devfolio',
+      company: item.owner?.name || undefined,
+      deadline: item.ends_at ? new Date(item.ends_at) : undefined,
+      startDate: item.starts_at ? new Date(item.starts_at) : undefined,
+      link: `https://devfolio.co/hackathons/${item.slug}`,
+      tags: item.tagline ? [item.tagline.substring(0, 20)] : [], // Tagline used as tag
+      prize: "View on Devfolio", // Prize is usually inside nested objects or individual pages
+      location: item.is_online ? 'Online' : (item.location || 'India'),
+      source: 'devfolio-api'
+    }));
+
+    // Sorting by start date as a secondary sort
+    mappedData.sort((a, b) => {
+      const dateA = a.startDate?.getTime() || 0;
+      const dateB = b.startDate?.getTime() || 0;
+      return dateA - dateB;
+    });
+
+    console.log(`[Devfolio] Scraped ${mappedData.length} live events successfully.`);
+    return mappedData;
+  } catch (error: any) {
+    console.error('Error scraping Devfolio:', error.message);
     return [];
   }
 };
