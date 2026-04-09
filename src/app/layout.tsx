@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import LiquidGlass from "@/components/LiquidGlass";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
   title: "AllHacks India",
   description: "Curated high-value hackathons & tech events in India.",
   icons: {
-    icon: "/favicon.jpg",
+    icon: "/favicon.png",
   },
 };
 
@@ -33,7 +34,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col relative">
-        {/* <ArcticLights /> */}
+        <LiquidGlass />
         {children}
       </body>
     </html>

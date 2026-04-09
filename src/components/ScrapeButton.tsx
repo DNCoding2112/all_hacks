@@ -25,13 +25,13 @@ export default function ScrapeButton() {
   };
 
   return (
-    <button 
-      onClick={handleScrape} 
+    <button
+      onClick={handleScrape}
       disabled={loading}
-      className={`group flex items-center gap-2 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 px-5 py-2.5 rounded-xl transition-all shadow-[0_0_15px_rgba(99,102,241,0.1)] hover:shadow-[0_0_20px_rgba(99,102,241,0.2)] font-medium ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+      className={`group flex items-center gap-3 bg-indigo-600/40 hover:bg-indigo-600/30 border-2 border-indigo-500/30 text-white px-8 py-3 rounded-2xl transition-all shadow-[0_0_25px_rgba(99,102,241,0.2)] hover:shadow-[0_0_35px_rgba(99,102,241,0.3)] font-bebas tracking-wider text-xl backdrop-blur-[4px] ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
-      <Zap className={`w-4 h-4 text-indigo-400 transition-transform ${loading ? 'animate-pulse' : 'group-hover:scale-110'}`} />
-      {loading ? 'Scraping...' : 'Trigger Scrape API'}
+      <Zap className={`w-5 h-5 text-indigo-300 transition-transform ${loading ? 'animate-pulse' : 'group-hover:scale-110'}`} />
+      {loading ? 'SCRAPING...' : 'TRIGGER SCRAPE API'}
     </button>
   );
 }
