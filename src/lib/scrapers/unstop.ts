@@ -5,7 +5,7 @@ import { HackathonData } from '../types';
  * TOGGLE THIS TO SWITCH BETWEEN MOCK AND REAL APIFY DATA
  * Set to true once you have a working Apify Actor URL/Token.
  */
-const USE_REAL_APIFY = false; 
+const USE_REAL_APIFY = false;
 
 export const scrapeUnstop = async (): Promise<HackathonData[]> => {
   try {
@@ -59,7 +59,7 @@ export const scrapeUnstop = async (): Promise<HackathonData[]> => {
  */
 async function fetchFromApify(): Promise<HackathonData[]> {
   const API_TOKEN = process.env.APIFY_API_TOKEN;
-  
+
   if (!API_TOKEN) {
     console.error('[Unstop] Apify Token missing in .env! Falling back to empty.');
     return [];
@@ -67,7 +67,7 @@ async function fetchFromApify(): Promise<HackathonData[]> {
 
   // Using shashank-kumar/unstop-scraper or similar
   // Replace ACTOR_ID with your preferred Unstop scraper ID from Apify Store
-  const ACTOR_ID = 'shashank-kumar/unstop-scraper'; 
+  const ACTOR_ID = 'shashank-kumar/unstop-scraper';
   const RUN_URL = `https://api.apify.com/v2/acts/${ACTOR_ID}/runs?token=${API_TOKEN}`;
 
   try {
@@ -80,7 +80,7 @@ async function fetchFromApify(): Promise<HackathonData[]> {
     });
 
     const datasetId = runResponse.data.data.defaultDatasetId;
-    
+
     // 2. Wait a bit for results (Ideally you'd use a webhook or polling here)
     // For a simple implementation, we'll fetch the dataset directly after a short delay
     // Note: Complex scrapers might take 30-60s.
@@ -89,7 +89,7 @@ async function fetchFromApify(): Promise<HackathonData[]> {
 
     const DATASET_URL = `https://api.apify.com/v2/datasets/${datasetId}/items?token=${API_TOKEN}`;
     const dataResponse = await axios.get(DATASET_URL);
-    
+
     const items = dataResponse.data || [];
     console.log(`[Unstop] Fetched ${items.length} items from Apify.`);
 
@@ -108,7 +108,7 @@ async function fetchFromApify(): Promise<HackathonData[]> {
     }));
 
     // Secondary Sort
-    results.sort((a, b) => (a.deadline?.getTime() || 0) - (b.deadline?.getTime() || 0));
+    results.sort((a: any, b: any) => (a.deadline?.getTime() || 0) - (b.deadline?.getTime() || 0));
 
     return results;
   } catch (err: any) {
